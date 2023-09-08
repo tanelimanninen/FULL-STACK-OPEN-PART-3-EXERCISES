@@ -62,6 +62,7 @@ app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     console.log(id)
 
+    //GO THROUGH PERSONS AND FIND CONTACT WITH GIVEN ID
     const person = persons.find(person => person.id === id)
     console.log(person)
 
@@ -73,6 +74,58 @@ app.get('/api/persons/:id', (request, response) => {
     else {
         response.status(404).end()
     }
+})
+
+//ROUTE 4: DELETE CONTACT BY GIVEN ID
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    console.log(id)
+
+    //GO THROUGH PERSONS AND FILTER OUT CONTACT WITH THE GIVEN ID
+    persons = persons.filter(person => person.id !== id)
+    response.status(204).end()
+})
+
+//FUNCTION FOR GENERATING ID FOR A NEW CONTACT
+const generateId = () => {
+    let randomId
+    
+    do {
+        randomId = Math.floor(Math.random() * 100)
+    } while (persons.some(person => person.id === randomId) && randomId > persons.length)
+    
+    //console.log(randomId)
+    return randomId.toString()
+  }
+
+//ROUTE 5: ADD NEW CONTACT
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+
+    //CONDITION 1: IF NAME OR NUMBER VALUE EMPTY
+    if (!body.name || !body.number) {
+        return response.status(400).json({ 
+            error: 'Can not add empty values' 
+        })
+    }
+
+    //CONDITION 2: IF NAME ALREADY EXISTS
+    const nameExists = persons.some((person) => person.name === body.name)
+
+    if (nameExists) {
+        return response.status(400).json({ 
+            error: 'Name must be unique' 
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateId(),
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
 })
 
 
