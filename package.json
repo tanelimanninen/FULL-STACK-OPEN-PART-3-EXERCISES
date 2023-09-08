@@ -1,0 +1,19 @@
+{
+  "name": "full-stack-open-part-3-exercises",
+  "version": "1.0.0",
+  "description": "Application for the University of Helsinki Full Stack Open part 3 exercises",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Taneli Manninen",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
