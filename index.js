@@ -1,7 +1,20 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+//MIDDLEWARES
+//CUSTOM TOKEN FOR POST REQUESTS: LOG REQUEST.BODY TO THE CONSOLE
+morgan.token('req-body', (request, response) => {
+    if (request.method === 'POST') {
+        return JSON.stringify(request.body)
+    }
+
+    return '-'
+})
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :req-body'))
+
 
 //TABLE FOR THE PERSONS DATA
 let persons = [
@@ -60,11 +73,11 @@ app.get('/info', (req, res) => {
 //ROUTE 4: GET SINGLE CONTACT BY ID
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    console.log(id)
+    //console.log(id)
 
     //GO THROUGH PERSONS AND FIND CONTACT WITH GIVEN ID
     const person = persons.find(person => person.id === id)
-    console.log(person)
+    //console.log(person)
 
     //CONDITION 1: IF PERSON WITH GIVEN ID EXISTS RETURN IT
     if (person) {
@@ -79,7 +92,7 @@ app.get('/api/persons/:id', (request, response) => {
 //ROUTE 4: DELETE CONTACT BY GIVEN ID
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    console.log(id)
+    //console.log(id)
 
     //GO THROUGH PERSONS AND FILTER OUT CONTACT WITH THE GIVEN ID
     persons = persons.filter(person => person.id !== id)
@@ -95,7 +108,7 @@ const generateId = () => {
     } while (persons.some(person => person.id === randomId) && randomId > persons.length)
     
     //console.log(randomId)
-    return randomId.toString()
+    return randomId
   }
 
 //ROUTE 5: ADD NEW CONTACT
@@ -123,6 +136,8 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
         id: generateId(),
     }
+
+    //console.log(person)
 
     persons = persons.concat(person)
     response.json(person)
