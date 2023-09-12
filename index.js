@@ -59,7 +59,7 @@ let persons = [
 
 //ROUTE 1: GET SERVER ROOT AND SHOW TEXT
 app.get('/', (req, res) => {
-    res.send('<h1>Hello there!</h1></br><p>As you can see, you have come to middle of nothingness.<br/><br/>If you want to get somewhere, I suggest you add for example "/api/persons" to the end of the URL...<p/>')
+    res.send('<h1>Hello there and welcome to my web server!</h1> <br/> <p>If you want to get somewhere, here are the choises:</p> <br/> <p>Add to the end of the URL...</p> <br/><p>"/info"</p><p>"/api/persons"<p/>')
 })
 
 //ROUTE 2: GET ALL PERSONS DATA
