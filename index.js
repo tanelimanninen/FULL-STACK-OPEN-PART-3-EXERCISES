@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const Contact = require('./models/contact')
+const contact = require('./models/contact')
 
 //MIDDLEWARES
 //CUSTOM TOKEN FOR POST REQUESTS: LOG REQUEST.BODY TO THE CONSOLE
@@ -19,8 +22,8 @@ app.use(express.static('build'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - :req-body'))
 
 
-//TABLE FOR THE PERSONS DATA
-let persons = [
+//TABLE FOR THE PERSONS DATA (NO NEED FOR THIS ANYMORE)
+/*let persons = [
     {
         "name": "äijä 1",
         "number": "+111 1111 11111",
@@ -56,7 +59,7 @@ let persons = [
         "number": "+777 7777 77777",
         "id": 7
     }
-]
+]*/
 
 //ROUTE 1: GET SERVER ROOT AND SHOW TEXT
 app.get('/', (req, res) => {
@@ -64,32 +67,22 @@ app.get('/', (req, res) => {
 })
 
 //ROUTE 2: GET ALL PERSONS DATA
-app.get('/api/persons', (req, res) => {
-    res.json(persons)
+app.get('/api/persons', (request, response) => {
+    Contact.find({}).then(contacts => {
+        response.json(contacts)
+    })
 })
 
-//ROUTE 3: GET INFO PAGE WITH TEXT
-app.get('/info', (req, res) => {
-    res.send(`Phonebook includes ${persons.length} contacts<br/><br/>${new Date().toString()}`)
-})
+//ROUTE 3: GET INFO PAGE WITH TEXT (CURRENTLY BROKEN)
+/*app.get('/info', (request, response) => {
+    response.send(`Phonebook includes ${persons.length} contacts<br/><br/>${new Date().toString()}`)
+})*/
 
 //ROUTE 4: GET SINGLE CONTACT BY ID
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    //console.log(id)
-
-    //GO THROUGH PERSONS AND FIND CONTACT WITH GIVEN ID
-    const person = persons.find(person => person.id === id)
-    //console.log(person)
-
-    //CONDITION 1: IF PERSON WITH GIVEN ID EXISTS RETURN IT
-    if (person) {
-        response.json(person)
-    } 
-    //CONDITION 2: IF PERSON WITH GIVEN ID DOESN'T EXIST SHOW ERROR
-    else {
-        response.status(404).end()
-    }
+    Contact.findById(request.params.id).then(contact => {
+        response.json(contact)
+    })
 })
 
 //ROUTE 4: DELETE CONTACT BY GIVEN ID
@@ -125,29 +118,27 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    //CONDITION 2: IF NAME ALREADY EXISTS
-    const nameExists = persons.some((person) => person.name === body.name)
+    //CONDITION 2: IF NAME ALREADY EXISTS (CURRENTLY BROKEN)
+    /*const nameExists = persons.some((person) => person.name === body.name)
 
     if (nameExists) {
         return response.status(400).json({ 
             error: 'Name must be unique' 
         })
-    }
+    }*/
 
-    const person = {
+    const contact = new Contact({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    }
+    })
 
-    //console.log(person)
-
-    persons = persons.concat(person)
-    response.json(person)
+    contact.save().then(savedContact => {
+        response.json(savedContact)
+    })
 })
 
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

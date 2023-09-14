@@ -1,17 +1,7 @@
-//LOCAL SERVER
-//POST http://localhost:3001/api/persons
-//Content-Type: application/json
-
-//{
-    //"name": "äijä 8",
-    //"number": "+888 8888 88888"
-//}
-
-//WEB SERVER
-POST https://phonebook-backend-cp1j.onrender.com/api/persons/
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "äijä 12",
-    "number": "+121 2121 21212"
+    "name": "kontakti rest clientista",
+    "number": "+131 31313 31313"
 }
