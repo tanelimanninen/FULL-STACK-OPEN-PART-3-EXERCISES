@@ -20,8 +20,14 @@ const errorHandler = (error, request, response, next) => {
     console.log(error.message)
     console.log(error.name)
 
+    //CONDITION 1: GIVEN ID CAN'T BE FOUND
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id'})
+    }
+
+    //CONDITION 2: IF NEW CONTACT'S VALIDATION HAS ERRORS
+    else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
